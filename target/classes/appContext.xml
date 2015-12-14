@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+    default-lazy-init="false"
+    xmlns="http://www.springframework.org/schema/beans"
+    xsi:schemaLocation="
+  http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://cxf.apache.org/jaxrs
+  http://cxf.apache.org/schemas/jaxrs.xsd" >
+   
+ <bean id="connectionFactory"
+        class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://localhost:61616" />
+    </bean>
+     
+    <bean id="mailDestination"
+        class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="mail.queue" />
+    </bean>
+       
+    <bean id="jmsTemplate"
+        class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="connectionFactory" />
+    </bean>
+     
+    <bean id="producer"
+        class="com.santika.hendi.activeMQ.MessageProducerBean">
+        <property name="destination" ref="mailDestination" />
+        <property name="jmsTemplate" ref="jmsTemplate" />
+    </bean>
+     <bean id="consumer"
+        class="com.santika.hendi.activeMQ.MessageConsumerBean">
+        <property name="destination" ref="mailDestination" />
+        <property name="jmsTemplate" ref="jmsTemplate" />
+    </bean>
+     
+</beans>
